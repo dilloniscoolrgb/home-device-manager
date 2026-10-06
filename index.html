@@ -125,13 +125,11 @@
   function setStatus(id,status){const d=find(id);if(!d)return;d.status=status;if(saveDevices()){render();toast(`${d.name} marked ${status}.`)}}
   function ask(title,message,action,label='Confirm'){confirmCallback=action;$('#confirm-title').textContent=title;$('#confirm-message').textContent=message;$('#confirm-accept').textContent=label;$('#confirm-overlay').classList.remove('hidden');$('#confirm-accept').focus()}
   function closeConfirm(){confirmCallback=null;$('#confirm-overlay').classList.add('hidden')}
-  function printLabel(id){const d=find(id);if(!d)return;$('#label-preview').innerHTML=`<div class="print-label"><div style="display:flex;justify-content:space-between;align-items:start;gap:8px"><div><strong style="font-size:16px">${esc(d.name)}</strong><div class="mono" style="margin-top:5px">${esc(d.assetId)}</div></div>${badge(d.status)}</div><div style="font-size:11px;margin-top:10px">SERIAL: <strong>${esc(d.serial)}</strong></div><div id="label-qr" class="code-box"><div></div></div><div class="code-box"><svg id="label-barcode"></svg></div></div>`;renderQR($('#label-qr>div'),codeUrl(d));renderBarcode($('#label-barcode'),d.assetId);$('#print-overlay').classList.remove('hidden');$('#print-overlay').setAttribute('aria-hidden','false');$('#print-action').focus()}
   function closeDrawer(){$('#sidebar').classList.remove('open');$('#drawer-backdrop').classList.remove('open');$('#menu-toggle').setAttribute('aria-expanded','false')}
   document.addEventListener('click',e=>{const nav=e.target.closest('[data-nav]');if(nav){navigate(nav.dataset.nav);return}const b=e.target.closest('[data-action]');if(!b)return;const a=b.dataset.action,id=b.dataset.id,d=find(id);switch(a){
     case 'add':navigate('Add Device');break;case 'all':navigate('Devices');break;case 'open':openDevice(id);break;
     case 'edit':editId=id;view='Add Device';render();window.scrollTo(0,0);break;
     case 'cancel-form':if(editId)openDevice(editId);else navigate('Devices');break;
-    case 'label':printLabel(id);break;case 'qr':renderQR($('#detail-qr'),codeUrl(d));toast('Device QR code generated.');break;
     case 'barcode':renderBarcode($('#detail-barcode'),d.assetId);toast('Asset barcode generated.');break;
     case 'set-active':setStatus(id,'Active');break;
     case 'set-status':setStatus(id,b.textContent.replace('Mark ','').trim());break;
